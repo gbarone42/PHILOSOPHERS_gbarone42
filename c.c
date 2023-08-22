@@ -1,4 +1,3 @@
-// philo_bonus.c
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +30,7 @@ void init_philosophers(t_philosopher *philosophers, t_config *config)
         philosophers[i].config = config;
         pthread_mutex_init(&philosophers[i].fork_mutexes[0], NULL);
         pthread_mutex_init(&philosophers[i].fork_mutexes[1], NULL);
+        philosophers[i].eat_count = 0;
     }
 }
 
@@ -40,38 +40,34 @@ void *philosopher_thread(void *arg)
     int id = philosopher->id;
     t_config *config = philosopher->config;
 
-    while (1)
+    while (!config->stop_simulation)
     {
         // Thinking
-        printf("%d is thinking\n", id);
+        log_action(id, "is thinking");
         usleep(config->time_to_sleep * 1000);
 
         // Pick up forks
         pthread_mutex_lock(&philosopher->fork_mutexes[0]);
-        printf("%d has taken a fork\n", id);
+        log_action(id, "has taken a fork");
         pthread_mutex_lock(&philosopher->fork_mutexes[1]);
-        printf("%d has taken another fork\n", id);
+        log_action(id, "has taken another fork");
 
         // Eating
-        printf("%d is eating\n", id);
+        log_action(id, "is eating");
         usleep(config->time_to_eat * 1000);
+        philosopher->eat_count++;
 
         // Put down forks
         pthread_mutex_unlock(&philosopher->fork_mutexes[0]);
         pthread_mutex_unlock(&philosopher->fork_mutexes[1]);
+
+        if (config->num_times_to_eat > 0 && philosopher->eat_count >= config->num_times_to_eat)
+            break;
     }
 
     return NULL;
 }
 
-void *grim_reaper_thread(void *arg)
-{
-    (void)arg; // Mark the parameter as unused
-
-    // Implement termination conditions here
-
-    return NULL;
-}
 void print_timestamp(int id)
 {
     struct timeval tv;
@@ -109,11 +105,11 @@ int main(int argc, char *argv[])
         pthread_create(&philosopher_threads[i], NULL, philosopher_thread, &philosophers[i]);
     }
 
-	pthread_t grim_reaper_thread_id;
-	pthread_create(&grim_reaper_thread_id, NULL, grim_reaper_thread, NULL);
-
-    // Wait for philosopher threads to finish (not shown here)
-    // Wait for grim reaper thread to finish (not shown here)
+    // Wait for philosopher threads to finish
+    for (int i = 0; i < config.num_philosophers; i++)
+    {
+        pthread_join(philosopher_threads[i], NULL);
+    }
 
     cleanup_resources(philosophers, &config);
 
