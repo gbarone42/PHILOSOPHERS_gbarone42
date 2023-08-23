@@ -41,3 +41,13 @@ bool	is_valid_input(int ac, char **av)
 
 	return (1);
 }
+
+size_t	ft_strlen(const char *s)
+{
+	const char	*eos;
+
+	eos = s;
+	while (*eos != '\0')
+		eos++;
+	return (eos - s);
+}

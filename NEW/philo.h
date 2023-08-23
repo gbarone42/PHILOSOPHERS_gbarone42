@@ -20,8 +20,11 @@ bool is_valid_input(int ac, char **av);
 
 t_philo **init_philosophers(t_table *table); //static???????
 bool	init_global_mutexes(t_table *table);
+size_t	ft_strlen(const char *s);
 
-t_table *init_table(int ac, char **av, int i);
+t_table *init_table(int ac, char **av);
+
+void	free_philosophers(t_philo **philos, unsigned int count);
 
 void ft_error(void);
 void ft_errorr(void);

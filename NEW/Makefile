@@ -1,16 +1,8 @@
 CC      = gcc
 CFLAGS  = -Werror -Wall -Wextra -pthread -g
-NAME    = philo_bonus
+NAME    = philo
 
-MODE    = none
-ifeq ($(MODE), pretty)
-    CFLAGS  += -D DEBUG_FORMATTING=1
-endif
-ifeq ($(MODE), debug)
-    CFLAGS  += -D DEBUG_FORMATTING=1 -fsanitize=thread -g
-endif
-
-SRC     = newphil.c errors.c func01.c func02.c  # Add new source files here
+SRC     = main.c errors.c func01.c func02.c init_philo.c # Add new source files here
 SRCS    = $(SRC)
 OBJ     = $(SRC:.c=.o)
 OBJS    = $(OBJ:.o=.o)
@@ -22,20 +14,55 @@ INC     = -I ./includes/
 all: $(NAME)
 
 $(NAME): $(OBJS)
+	@printf "\033[1;36m\n"
+	@echo "  _________________________________________________________"
+	@echo " /                                                         \\"
+	@echo "     Welcome to the Realm of Wisdom and Threads!           "
+	@echo "            📚🔮🌌 The Multiverse Awaits! 🌌🔮📚             "
+	@echo "                                                          "
+	@echo "     Unravel the secrets of existence through the         "
+	@echo "     profound journey of philosophers and threads.       "
+	@echo "     Each thread a philosopher, each moment an           "
+	@echo "     opportunity for enlightenment.                     "
+	@echo "                                                          "
+	@echo "            Be the code hero philosophers need!         "
+	@echo "  _________________________________________________________"
+	@echo "\033[0m"
 	@$(CC) $(CFLAGS) $(OBJS) -o $@
-	@echo "\n\033[1;36m  ==> Compilation complete! Run './$(NAME)' to start the program.\033[0m\n"
+	@echo "\n\033[1;36m  ==> Compilation complete! Embark on your quest with './$(NAME)'.\033[0m\n"
 
 %.o: %.c
 	@printf "\033[1;33m  Compiling $<...\033[0m"
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
 
 clean:
+	@printf "\033[1;31m\n"
+	@echo "  _________________________________________________________"
+	@echo " /                                                         \\"
+	@echo "       Clearing the Threads of Temporary Existence...         "
+	@echo "            💧 Threads may vanish, but wisdom remains.       "
+	@echo "  _________________________________________________________"
+	@echo "\033[0m"
 	@rm -f $(OBJS)
 
 fclean: clean
+	@printf "\033[1;31m\n"
+	@echo "  __________________________________________________________"
+	@echo " /                                                          \\"
+	@echo "       Erasing the Echoes of Philosophical Journey...         "
+	@echo "          🔥 Let go of attachments, embrace the void.         "
+	@echo "  __________________________________________________________"
+	@echo "\033[0m"
 	@rm -f $(NAME)
 
 re: fclean all
+	@printf "\033[1;35m\n"
+	@echo "  __________________________________________________________"
+	@echo " /                                                          \\"
+	@echo "    Rekindling the Flames of Enlightenment...                 "
+	@echo "      ✨ Threads reawaken, wisdom shines anew.                "
+	@echo "  __________________________________________________________"
+	@echo "\033[0m"
 
 test:
 	@printf "\033[1;32m\n"
@@ -59,3 +86,4 @@ test:
 	@echo "             philosopher must eat                           "
 	@echo "                                                              "
 	@echo "  ➡️ Example: ./$(NAME) 5 800 200 200                        "
+	
