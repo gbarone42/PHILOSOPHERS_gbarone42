@@ -17,7 +17,7 @@ typedef struct s_philo t_philo;
 
 int parse_positive_integer(char *str);
 bool is_valid_input(int ac, char **av);
-static bool	start_simulation(t_table *table);
+//static  bool    start_simulation(t_table *table);
 void *philosopher(void *data);
 time_t	get_time_in_ms(void);
 int     gettimeofday(struct timeval * __restrict, void * __restrict);

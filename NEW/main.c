@@ -23,9 +23,6 @@ int validate_and_initialize_table(int ac, char **av, t_table **table)
     return 0;
 }
 
-
-
-
 void print_status_with_time(t_philo *philo, t_status status)
 {
     struct timeval tv;
@@ -45,6 +42,80 @@ void print_status_with_time(t_philo *philo, t_status status)
 }
 
 
+bool	has_simulation_stopped(t_table *table)
+{
+	bool	r;
+
+	r = false;
+	pthread_mutex_lock(&table->sim_stop_lock);
+	if (table->sim_stop == true)
+		r = true;
+	pthread_mutex_unlock(&table->sim_stop_lock);
+	return (r);
+}
+
+void	philo_sleep(t_table *table, time_t sleep_time)
+{
+	time_t	wake_up;
+
+	wake_up = get_time_in_ms() + sleep_time;
+	while (get_time_in_ms() < wake_up)
+	{
+		if (has_simulation_stopped(table))
+			break ;
+		usleep(100);
+	}
+}
+
+static void think_routine(t_philo *philo, bool silent)
+{
+	pthread_mutex_lock(&philo->meal_time_lock);
+	time_t time_since_last_meal = get_time_in_ms() - philo->last_meal;
+	time_t time_to_think = (philo->table->time_to_die - time_since_last_meal - philo->table->time_to_eat) / 2;
+	pthread_mutex_unlock(&philo->meal_time_lock);
+
+	time_to_think = time_to_think < 0 ? 0 : time_to_think;
+	time_to_think = (time_to_think == 0 && silent) ? 1 : time_to_think;
+	time_to_think = (time_to_think > 600) ? 200 : time_to_think;
+
+	if (!silent)
+		print_status_with_time(philo, THINKING);
+
+	philo_sleep(philo->table, time_to_think);
+}
+
+
+
+static void eat_sleep_routine(t_philo *philo)
+{
+    pthread_mutex_lock(&philo->table->fork_locks[philo->fork[0]]);
+    pthread_mutex_lock(&philo->table->fork_locks[philo->fork[1]]);
+
+    print_status_with_time(philo, GOT_FORK_1);
+    print_status_with_time(philo, GOT_FORK_2);
+    print_status_with_time(philo, EATING);
+
+    pthread_mutex_lock(&philo->meal_time_lock);
+    philo->last_meal = get_time_in_ms();
+    pthread_mutex_unlock(&philo->meal_time_lock);
+
+    philo_sleep(philo->table, philo->table->time_to_eat);
+
+    if (!has_simulation_stopped(philo->table))
+    {
+        pthread_mutex_lock(&philo->meal_time_lock);
+        philo->times_ate += 1;
+        pthread_mutex_unlock(&philo->meal_time_lock);
+    }
+
+    print_status_with_time(philo, SLEEPING);
+
+    pthread_mutex_unlock(&philo->table->fork_locks[philo->fork[1]]);
+    pthread_mutex_unlock(&philo->table->fork_locks[philo->fork[0]]);
+
+    philo_sleep(philo->table, philo->table->time_to_sleep);
+}
+
 
 static void *lone_philo_routine(t_philo *philo)
 {
@@ -59,33 +130,44 @@ static void *lone_philo_routine(t_philo *philo)
     return NULL;
 }
 
-time_t	get_time_in_ms(void)
+time_t get_time_in_ms(void)
 {
-	struct timeval		tv;
+    struct timeval tv;
 
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+    gettimeofday(&tv, NULL);
+    printf("\ntv_sec: %ld, tv_usec: %ld\n\n", tv.tv_sec, (long)tv.tv_usec);
+
+    return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
-
 
 void synchronize_start(time_t start_time)
 {
     while (get_time_in_ms() < start_time)
     {
+        printf("Current time: %lld, Start time: %lld\n", (long long)get_time_in_ms(), (long long)start_time);
+
         // This loop continues as long as the current time is less than the start time.
         // It effectively waits for the start time to be reached before moving on.
     }
+
+    printf("Exiting synchronization loop\n");
 }
+
+
+
+
 
 void *philosopher(void *data)
 {
+    printf("Exin loop\n");
     t_philo *philo = (t_philo *)data;
 
-    // Set the last meal time to the simulation start time
+
     pthread_mutex_lock(&philo->meal_time_lock);
     philo->last_meal = philo->table->start_time;
     pthread_mutex_unlock(&philo->meal_time_lock);
 
+    
     // Delay the philosopher's start time
     synchronize_start(philo->table->start_time);
 
@@ -113,25 +195,31 @@ void *philosopher(void *data)
 
 
 
-static bool	start_simulation(t_table *table)
+static  bool    start_simulation(t_table *table)
 {
 	unsigned int	i;
 
 	table->start_time = get_time_in_ms() + (table->nb_philos * 2 * 10);
 	i = 0;
+    printf("Setting start time: %ld\n\n", table->start_time);
 	while (i < table->nb_philos)
 	{
+        write(1,"78910\n", 7);
 		if (pthread_create(&table->philos[i]->thread, NULL,
 				&philosopher, table->philos[i]) != 0)
-			return (-1);
+                {
+                    write(1,"ABCDE", 5);
+                    ft_errorrrr();
+			        return (-1);
+                }
 		i++;
 	}
-	if (table->nb_philos > 1)
-	{
-		if (pthread_create(&table->grim_reaper, NULL,
-				&grim_reaper, table) != 0)
-			return (-1);
-	}
+	// if (table->nb_philos > 1)
+	// {
+	// 	if (pthread_create(&table->grim_reaper, NULL,
+	// 			&grim_reaper, table) != 0)
+	// 		return (-1);
+	// }
 	return (0);
 }
 
@@ -149,6 +237,7 @@ int main(int ac, char **av)
 		return (-1);
 	if (!start_simulation(table))
 		return (-1);
+    write(1,"momo",4);
     // Create philosopher threads here and start the simulation
 	//write(1,"ekko",4);
     return 0;

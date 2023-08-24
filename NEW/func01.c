@@ -26,7 +26,6 @@ static pthread_mutex_t *init_forks(t_table *table)
 
 bool init_global_mutexes(t_table *table) //static??
 {
-	write(1,"9999",4);
     table->fork_locks = init_forks(table);
     if (!table->fork_locks)
     {
@@ -81,11 +80,11 @@ t_table *init_table(int ac, char **av)
         return NULL;
     }
 
-    printf("nb_philos: %d\n", table->nb_philos);
+    printf("\nnb_philos: %d\n", table->nb_philos);
     printf("time_to_die: %ld\n", table->time_to_die);
     printf("time_to_eat: %ld\n", table->time_to_eat);
     printf("time_to_sleep: %ld\n", table->time_to_sleep);
-    printf("must_eat_count: %d\n", table->must_eat_count);
+    printf("must_eat_count: %d\n\n", table->must_eat_count);
 
     table->philos = init_philosophers(table);
     if (!table->philos)
@@ -94,13 +93,18 @@ t_table *init_table(int ac, char **av)
         free(table); // Clean up memory
         return NULL;
     }
+
+    printf("Philosophers initialized successfully\n");
+
     if (!init_global_mutexes(table))
     {
+        printf("Global mutexes initialization failed\n");
         // Handle global mutexes initialization error
         free(table->philos); // Clean up memory
         free(table);
         return NULL;
     }
+    printf("Global mutexes initialized successfully\n");
     table->sim_stop = 0;
     return table;
 }
