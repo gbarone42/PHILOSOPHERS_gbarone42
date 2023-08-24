@@ -75,7 +75,6 @@ t_table *init_table(int ac, char **av)
     t_table *table;
 
     table = init_table_params(ac, av, &index);
-
     if (!table)
     {
         // Handle initialization error

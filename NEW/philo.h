@@ -17,6 +17,10 @@ typedef struct s_philo t_philo;
 
 int parse_positive_integer(char *str);
 bool is_valid_input(int ac, char **av);
+static bool	start_simulation(t_table *table);
+void *philosopher(void *data);
+time_t	get_time_in_ms(void);
+int     gettimeofday(struct timeval * __restrict, void * __restrict);
 
 t_philo **init_philosophers(t_table *table); //static???????
 bool	init_global_mutexes(t_table *table);
@@ -54,5 +58,15 @@ typedef struct s_philo {
     time_t          last_meal;
     t_table         *table;
 } t_philo;
+
+typedef enum {
+    GOT_FORK_1,
+    GOT_FORK_2,
+    EATING,
+    SLEEPING,
+    THINKING,
+    DIED
+} t_status;
+
 
 #endif /* PHILO_H */
