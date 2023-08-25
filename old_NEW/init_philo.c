@@ -56,6 +56,9 @@ static bool initialize_philosopher(t_philo *philo, t_table *table, unsigned int 
 {
     char *error_message;
 
+    // Print the address of the philo pointer
+    printf("Address of philo pointer: %p\n", (void *)&philo);
+
     philo = malloc(sizeof(t_philo));
     if (!philo)
     {
@@ -82,25 +85,28 @@ t_philo **init_philosophers(t_table *table)
     t_philo **philos;
     unsigned int i;
 
-    //write(1, "7777", 4);
+    write(1, "7777", 4);
     philos = allocate_philosophers(table);
     if (!philos)
     {
+        write(1, "www", 3);
         return NULL;
     }
-    
-    // Print the value of philos
-    printf("Value of philos: %p\n", (void *)philos);
-
+    printf("Value of philos: %p\n", (void *)philos); // Print the value of philos
+    write(1, "zzz", 3);
     i = 0;
-    while (i < table->nb_philos)
+    while (i < (unsigned int)table->nb_philos)
     {
+        write(1, "QWQ", 3);
         if (!initialize_philosopher(philos[i], table, i))
         {
+            write(1,"NNNN",4);
+            printf("Error initializing philosopher %d\n", i);
             free_philosophers(philos, i); // Clean up previously allocated philosophers
             return NULL;
         }
         i++;
     }
-    return philos;
+    write(1, "TTT", 3);
+    return (philos);
 }
