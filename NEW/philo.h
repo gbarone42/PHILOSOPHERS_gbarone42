@@ -33,30 +33,31 @@ void	free_philosophers(t_philo **philos, unsigned int count);
 void ft_error(void);
 void ft_errorr(void);
 void ft_errorrrr(void);
+bool	has_simulation_stopped(t_table *table);
 
 typedef struct s_table {
-    time_t          start_time;
-    unsigned int    nb_philos;
+    time_t          start_time; //
+    unsigned int    nb_philos; //
     pthread_t       grim_reaper;
-    time_t          time_to_die;
-    time_t          time_to_eat;
-    time_t          time_to_sleep;
-    int             must_eat_count;
-    bool            sim_stop;
-    pthread_mutex_t sim_stop_lock;
-    pthread_mutex_t write_lock;
-    pthread_mutex_t *fork_locks;
-    t_philo         **philos;
+    time_t          time_to_die;//
+    time_t          time_to_eat;//
+    time_t          time_to_sleep;//
+    int             must_eat_count;// //n_eat
+    bool            sim_stop; //
+    pthread_mutex_t sim_stop_lock; //
+    pthread_mutex_t write_lock; //
+    pthread_mutex_t *fork_locks; //
+    t_philo         **philos; //
 } t_table;
 
 typedef struct s_philo {
     pthread_t       thread;
-    unsigned int    id;
-    unsigned int    times_ate;
+    unsigned int    id; //id
+    unsigned int    times_ate;//n_eaten
     unsigned int    fork[2];
     pthread_mutex_t meal_time_lock;
     time_t          last_meal;
-    t_table         *table;
+    t_table         *table; //table
 } t_philo;
 
 typedef enum {
