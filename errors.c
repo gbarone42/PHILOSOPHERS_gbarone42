@@ -1,8 +1,5 @@
 #include "philo.h"
 
-
-
-
 void	ft_error(void)
 {
 	write(1, "\n", 1);
@@ -45,3 +42,4 @@ void	ft_errorrrr(void)
 	write(1, "\n", 1);
 	exit(1);
 }
+

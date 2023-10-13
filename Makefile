@@ -1,16 +1,8 @@
 CC      = gcc
 CFLAGS  = -Werror -Wall -Wextra -pthread -g
-NAME    = philo_bonus
+NAME    = philo
 
-MODE    = none
-ifeq ($(MODE), pretty)
-    CFLAGS  += -D DEBUG_FORMATTING=1
-endif
-ifeq ($(MODE), debug)
-    CFLAGS  += -D DEBUG_FORMATTING=1 -fsanitize=thread -g
-endif
-
-SRC     = c.c
+SRC     = main.c errors.c init.c validate.c thread.c siesta.c observe.c# Add new source files here
 SRCS    = $(SRC)
 OBJ     = $(SRC:.c=.o)
 OBJS    = $(OBJ:.o=.o)
@@ -40,7 +32,7 @@ $(NAME): $(OBJS)
 	@echo "\n\033[1;36m  ==> Compilation complete! Embark on your quest with './$(NAME)'.\033[0m\n"
 
 %.o: %.c
-	@printf "\033[1;33m  Forging $< into an awe-inspiring artifact...\033[0m"
+	@printf "\033[1;33m  Compiling $<...\033[0m"
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
 
 clean:
@@ -94,4 +86,4 @@ test:
 	@echo "             philosopher must eat                           "
 	@echo "                                                              "
 	@echo "  ➡️ Example: ./$(NAME) 5 800 200 200                        "
-	@echo
+	
