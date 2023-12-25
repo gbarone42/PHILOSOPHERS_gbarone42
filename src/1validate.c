@@ -1,15 +1,19 @@
-#include "philo.h"
+#include "../includes/philosophers.h"
 
+// void parity(t_philo *philo)
+// {
+//     // Declare the variable
+//     bool is_total_even;
 
-time_t get_time_in_ms(void)
-{
-    struct timeval tv;
+//     // Assign the value to the variable
+//     is_total_even = (philo->data->number_of_philos % 2 == 0);
 
-    gettimeofday(&tv, NULL);
-    printf("\ntv_sec: %ld, tv_usec: %ld\n\n", tv.tv_sec, (long)tv.tv_usec);
-
-    return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
+//     // Apply the delay based on the parity of the total number and philosopher's ID
+//     if ((is_total_even && philo->id_philo % 2 == 0) ||
+//         (!is_total_even && philo->id_philo % 2 != 0)) {
+//         usleep(100);
+//     }
+// }
 
 
 int	parse_positive_integer(char *str)
@@ -54,18 +58,9 @@ bool	is_valid_input(int ac, char **av)
 }
 
 
-
-int validate_table(int ac, char **av)
+int check(int ac, char **av)
 {
-    if (ac - 1 < 4 || ac - 1 > 5) 
-	{
-		ft_error();
-        return 1;
-    }
     if (!is_valid_input(ac, av))
-	{
-		ft_errorrrr();
-        return 1;
-    }
-    return 0;
+        ft_errorrrr();
+    return (1);
 }

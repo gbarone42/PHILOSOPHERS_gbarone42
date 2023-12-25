@@ -1,0 +1,101 @@
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
+
+# include <stdio.h>
+# include <string.h>
+# include <unistd.h>
+# include <errno.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <pthread.h>
+# include <fcntl.h>
+# include <semaphore.h>
+# include <signal.h>
+# include <limits.h>
+# include <stdbool.h>
+
+# define MAX_PHILOS 200
+# define SUCCESS 0
+# define DEATH_OCCURRED -1
+
+typedef struct s_data
+{
+	pthread_t		stalker;
+	pthread_mutex_t	timestamp_mutex;
+	pthread_mutex_t	meal_access_mutex;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	last_meal_mutex;
+	pthread_mutex_t	dad;
+	pthread_mutex_t	*forks;
+	int				gburp;
+	int				number_of_philos;
+	int				number_of_meals;
+	int				time_to_sleep;
+	int				time_to_eat;
+	int				time_to_die;
+	int				n_end;
+	int				dead;
+	int				all_satisfied;
+	long long		time_start;
+}	t_data;
+
+typedef struct s_philo
+{
+	pthread_t		thread;
+	int				fk1;//left fork
+	int				fk2;//right fork
+	t_data			*data;
+	long long		time_last_meal;
+	int				id_philo;
+	int				burpo;
+}	t_philo;
+
+int			fk_lock_2(int dx, int sx);
+int			fk_lock_1(int sx, int dx);
+int			death_status(t_data *data);
+void		*ft_osserva(void *ph);
+int			ft_is_dead(t_philo *philo);
+// long long	delta_time(long long time);
+// long long	ft_get_time_now(void);
+void		*life_cycle(void *ph);
+void		ft_think(t_philo *philo);
+void		ft_stampa_pd(t_philo *philo, char *str);
+
+int			ft_isdigit(char *str);
+void		ft_gburpoplus(t_philo *philo);
+void		ft_mutexalo(t_data *data);
+int			ft_print_error(void);
+void		ft_lonely_boy(t_philo *philo);
+void		ft_data_init(int ac, char **av, t_data *data);
+int			ft_ca(t_philo *philo, long long dt, long long tn);
+
+
+void		ft_general_init(int ac, char **av, t_data *data, t_philo *philo);
+void 		ft_init_philo(t_philo *philo, t_data *data);
+void		ft_data_init(int ac, char **av, t_data *data);
+int			check(int ac, char **av);
+void		ft_error(void);
+void		ft_errorrrr(void);
+int 		ft_check_args(int ac, char **av);
+bool		is_valid_input(int ac, char **av);
+int			parse_positive_integer(char *str);
+int			ft_atoi(const char *str);
+
+void		 philo_simulation(t_philo *philo);
+void 		parity(t_philo *philo);
+int	death_status(t_data *data);
+
+
+long long		ft_get_time_now(void);
+long long	delta_time(long long time);
+
+int ft_sleep(t_philo *philo);
+int ft_eat(t_philo *philo);
+
+void *life_cycle(void *ph);
+int is_simulation_over(t_data *data);
+void init_last_meal_time(t_philo *philo);
+
+void		ft_destroyall(t_philo *philo);
+
+#endif

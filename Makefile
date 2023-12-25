@@ -1,18 +1,41 @@
-CC      = gcc
-CFLAGS  = -Werror -Wall -Wextra -pthread -g
-NAME    = philo
+NAME = philo
 
-SRC     = main.c errors.c init.c validate.c thread.c siesta.c observe.c# Add new source files here
-SRCS    = $(SRC)
-OBJ     = $(SRC:.c=.o)
-OBJS    = $(OBJ:.o=.o)
+# Directories
+SRC_DIR = src
+OBJ_DIR = objs
+INCLUDE_DIR = includes
 
-INC     = -I ./includes/
+# Source files
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-.PHONY: all re clean fclean test philo philotest
+# Header files
+HDRS = $(wildcard $(INCLUDE_DIR)/*.h)
 
-all: $(NAME)
+# Object files
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
+# Compiler and flags
+CC = gcc
+CFLAGS = -g -Wall -Wextra -Werror -I$(INCLUDE_DIR) -pthread
+RM = rm -rf
+MKDIR = mkdir -p
+
+# Color codes
+CLR_RMV = \033[0m
+RED = \033[1;31m
+GREEN = \033[1;32m
+YELLOW = \033[1;33m
+BLUE = \033[1;34m
+CYAN = \033[1;36m
+GOLD = \033[1;33m
+
+# Rule to compile individual source files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HDRS)
+	@$(MKDIR) $(@D)
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@printf "\033[2K\r${BLUE}[BUILD - $(NAME)]${CLR_RMV} '$<' ${END}"
+
+# Build the executable
 $(NAME): $(OBJS)
 	@printf "\033[1;36m\n"
 	@echo "  _________________________________________________________"
@@ -31,9 +54,7 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $@
 	@echo "\n\033[1;36m  ==> Compilation complete! Embark on your quest with './$(NAME)'.\033[0m\n"
 
-%.o: %.c
-	@printf "\033[1;33m  Compiling $<...\033[0m"
-	@$(CC) $(CFLAGS) -c $< -o $@ $(INC)
+all: $(NAME)
 
 clean:
 	@printf "\033[1;31m\n"
@@ -43,7 +64,8 @@ clean:
 	@echo "            💧 Threads may vanish, but wisdom remains.       "
 	@echo "  _________________________________________________________"
 	@echo "\033[0m"
-	@rm -f $(OBJS)
+	@$(RM) $(OBJ_DIR)
+	@echo "${YELLOW}${CLR_RMV}"
 
 fclean: clean
 	@printf "\033[1;31m\n"
@@ -53,7 +75,8 @@ fclean: clean
 	@echo "          🔥 Let go of attachments, embrace the void.         "
 	@echo "  __________________________________________________________"
 	@echo "\033[0m"
-	@rm -f $(NAME)
+	@$(RM) $(NAME)
+	@echo "${RED}${CLR_RMV}"
 
 re: fclean all
 	@printf "\033[1;35m\n"
@@ -86,4 +109,6 @@ test:
 	@echo "             philosopher must eat                           "
 	@echo "                                                              "
 	@echo "  ➡️ Example: ./$(NAME) 5 800 200 200                        "
-	
+	@echo "\033[0m"
+
+.PHONY: all clean fclean re test philo philotest
