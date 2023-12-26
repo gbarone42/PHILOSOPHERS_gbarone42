@@ -1,6 +1,5 @@
 #include "../includes/philosophers.h"
 
-
 int	ft_atoi(const char *str)
 {
 	int	neg;
