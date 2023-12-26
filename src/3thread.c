@@ -1,8 +1,4 @@
-
 #include "../includes/philosophers.h"
-
-
-
  //ft_even_odd
  //purpose of this function is to reduce the likelihood of deadlock in a
  //situation where multiple threads (philosophers) are competing for shared
@@ -14,14 +10,14 @@
  //such delays can help in preventing situations where all philosophers
  //pick up one fork and then wait indefinitely for the other (a classic deadlock scenario)
 
-
 void	*ft_start_thread(t_philo *philo)
 {
 	int	i;
 
 	i = 0;
 	philo->data->time_start = ft_get_time_now();
-	while (i < philo->data->number_of_philos)//one thread per philosopher
+	//one thread per philosopher
+	while (i < philo->data->number_of_philos)
 	{
 		//parity(&philo[i]);
 		pthread_create(&philo[i].thread, NULL, life_cycle, (void *)&philo[i]);//&philo[i].thread is the pointer to the thread identifier
@@ -38,9 +34,9 @@ void	*ft_start_thread(t_philo *philo)
 	return (NULL);
 }
 
-void philo_simulation(t_philo *philo)
+void	philo_simulation(t_philo *philo)
 {
-    ft_start_thread(philo);
-    usleep(424242);
-    ft_destroyall(philo);
+	ft_start_thread(philo);
+	usleep(424242);
+	ft_destroyall(philo);
 }

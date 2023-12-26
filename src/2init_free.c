@@ -19,10 +19,9 @@ void	ft_destroyall(t_philo *philo)
 	pthread_mutex_destroy(&philo->data->print_mutex);
 	pthread_mutex_destroy(&philo->data->dad);
 	pthread_mutex_destroy(&philo->data->last_meal_mutex);
-	free(philo->data->forks); 
-	free(philo->data); 
+	free(philo->data->forks);
+	free(philo->data);
 	free(philo);
-
 }
 
 void	ft_data_init(int ac, char **av, t_data *data)
@@ -40,33 +39,32 @@ void	ft_data_init(int ac, char **av, t_data *data)
 	return ;
 }
 
-
-												//philo is an array of t_philo structures, each representing a philoso
-void ft_init_philo(t_philo *philo, t_data *data)
+void	ft_init_philo(t_philo *philo, t_data *data)//philo is an array of t_philo structures, each representing a philoso
 {
-    int i = 0;
+	int	i;
 
-    if (!philo || !data)
-        return;  // Adding a safety check for null pointers.
-    ft_mutexalo(data);  // Initialize various mutexes in the t_data structure.
-    data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->number_of_philos);//This line allocates memory for an array of mutexes (data->forks), with one mutex (fork) per philosopher. This ensures the total number of forks is equal to the number of philosophers.
-    if (!data->forks)
-        return;
-    while (i < data->number_of_philos)
+	i = 0;
+	if (!philo || !data)
+		return;// Adding a safety check for null pointers.
+	ft_mutexalo(data);// Initialize various mutexes in the t_data structure.
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->number_of_philos);//This line allocates memory for an array of mutexes (data->forks), with one mutex (fork) per philosopher. This ensures the total number of forks is equal to the number of philosophers.
+	if (!data->forks)
+		return ;
+	while (i < data->number_of_philos)
 	{
-        philo[i].data = data;  // Link each philosopher to the shared data structure.
-        philo[i].fk1 = i;
-        philo[i].fk2 = (i + 1) % data->number_of_philos;  // Simplifying fork assignment.
-        pthread_mutex_init(&data->forks[i], NULL);//initialize a mutex for each fork
-        philo[i].id_philo = i + 1;
-        philo[i].burpo = 0;  // Rename 'burpo' to 'meal_count' for clarity.
-        philo[i].time_last_meal = 0;
-        i++;
-    }
+		philo[i].data = data;// Link each philosopher to the shared data structure.
+		philo[i].fk1 = i;
+		philo[i].fk2 = (i + 1) % data->number_of_philos;// Simplifying fork assignment.
+		pthread_mutex_init(&data->forks[i], NULL);//initialize a mutex for each fork
+		philo[i].id_philo = i + 1;
+		philo[i].burpo = 0;// Rename 'burpo' to 'meal_count' for clarity.
+		philo[i].time_last_meal = 0;
+		i++;
+	}
 }
 
-void ft_general_init(int ac, char **av, t_data *data, t_philo *philo)
+void	ft_general_init(int ac, char **av, t_data *data, t_philo *philo)
 {
-    ft_data_init(ac, av, data);  // Initialize the data structure.
-    ft_init_philo(philo, data);  // Initialize the philosopher array.
+	ft_data_init(ac, av, data);// Initialize the data structure.
+	ft_init_philo(philo, data);// Initialize the philosopher array.
 }
