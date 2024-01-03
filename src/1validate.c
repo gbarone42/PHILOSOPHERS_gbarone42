@@ -1,4 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   1validate.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/03 13:00:46 by gbarone           #+#    #+#             */
+/*   Updated: 2024/01/03 13:03:05 by gbarone          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philosophers.h"
+
+void	parity(t_philo *philo)
+{
+	bool	is_total_even;
+
+	is_total_even = (philo->data->n_p % 2 == 0);
+	if (is_total_even)
+	{
+		usleep(100);
+	}
+}
 
 int	parse_positive_integer(char *str)
 {
@@ -22,9 +45,9 @@ bool	is_valid_input(int ac, char **av)
 	int	i;
 	int	nb;
 
-	i = 1;
 	if (ac < 5 || ac > 6)
 		return (0);
+	i = 1;
 	while (i < ac)
 	{
 		nb = parse_positive_integer(av[i]);
@@ -43,18 +66,3 @@ int	check(int ac, char **av)
 		ft_errorrrr();
 	return (1);
 }
-
-// void parity(t_philo *philo)
-// {
-//     // Declare the variable
-//     bool is_total_even;
-
-//     // Assign the value to the variable
-//     is_total_even = (philo->data->number_of_philos % 2 == 0);
-
-//     // Apply the delay based on the parity of the total number and philosopher's ID
-//     if ((is_total_even && philo->id_philo % 2 == 0) ||
-//         (!is_total_even && philo->id_philo % 2 != 0)) {
-//         usleep(100);
-//     }
-// }

@@ -1,73 +1,86 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_observer.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/03 13:01:17 by gbarone           #+#    #+#             */
+/*   Updated: 2024/01/03 15:30:58 by gbarone          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philosophers.h"
 
-// The ft_is_dead function should be responsible for
-// checking if a philosopher has died. This function
-// would typically compare the time since the philosopher's 
-// last meal to the time_to_die parameter.
-// If the time elapsed since the last meal is greater than time_to_die,
-// the philosopher is considered dead.
-
-int ft_is_dead(t_philo *philo)
+int	ft_is_dead(t_philo *philo)
 {
-    long long dead_time;       // Declaration of dead_time.
-    long long current_time;    // Declaration of current_time.
-    int ret;                   // Declaration of ret.
+	long long	dead_time;
+	long long	current_time;
+	int			ret;
 
-    // Assignment of dead_time.
-    // Storing the maximum time a philosopher can go without eating.
-    dead_time = (long long)philo->data->time_to_die;
-
-    // Consolidating mutex lock, time retrieval, and mutex unlock.
-    // Locks the mutex before accessing the shared timestamp.
-    pthread_mutex_lock(&philo->data->timestamp_mutex);
-    // Gets the current time.
-    current_time = ft_get_time_now();  
-    // Unlocks the mutex after accessing the shared timestamp. 
-    // This ensures thread-safe access to shared data.
-    pthread_mutex_unlock(&philo->data->timestamp_mutex);
-    // Lock and check in a single block to minimize locked duration.
-    // Locks the mutex before accessing the philosopher's last meal time.
-    pthread_mutex_lock(&philo->data->last_meal_mutex);
-    // Determines if the philosopher is dead based on the last meal time and current time.
-    ret = ft_ca(philo, dead_time, current_time);  
-    // Always unlock after checking.
-    pthread_mutex_unlock(&philo->data->last_meal_mutex);  
-
-    // Returns the result of the death check.
-    return ret;
+	dead_time = (long long)philo->data->time_to_die;
+	pthread_mutex_lock(&philo->data->timestamp_mutex);
+	current_time = ft_get_time_now();
+	pthread_mutex_unlock(&philo->data->timestamp_mutex);
+	ret = ft_ca(philo, dead_time, current_time);
+	return (ret);
 }
 
-int ft_sazio(t_philo *philo) {
-    if (philo->data->number_of_meals <= 0) {
-        return 0; // No meal limit set.
-    }
-
-    int satisfied_count = 0;
-    for (int i = 0; i < philo->data->number_of_philos; i++) {
-        // Protect with mutex if philo[i].burpo is accessed by multiple threads
-        if (philo[i].burpo >= philo->data->number_of_meals) {
-            satisfied_count++;
-        }
-    }
-
-    if (satisfied_count == philo->data->number_of_philos) {
-        pthread_mutex_lock(&philo->data->print_mutex);
-        printf("%llu 🌈 GENERAL SATISFACTION\n", delta_time(philo->data->time_start));
-        philo->data->all_satisfied = 1;
-        pthread_mutex_unlock(&philo->data->print_mutex);
-        return 1;
-    }
-    return 0;
+void	announce_satisfaction(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->print_mutex);
+	printf("%llu 🌈 SATISFACTION\n", delta_time(philo->data->time_start));
+	philo->data->all_satisfied = 1;
+	pthread_mutex_unlock(&philo->data->print_mutex);
 }
 
-void *ft_osserva(void *ph) {
-    t_philo *philo = (t_philo *)ph;
+int	ft_sazio(t_philo *philo)
+{
+	int	satisfied_count;
+	int	i;
 
-    while (1) {
-        if (ft_is_dead(philo) || (philo->data->number_of_meals > 0 && ft_sazio(philo))) {
-            break;
-        }
-        usleep(1000); // Check every 1 millisecond
-    }
-    return NULL;
+	satisfied_count = 0;
+	i = 0;
+	if (philo->data->number_of_meals <= 0)
+	{
+		return (0);
+	}
+	while (i < philo->data->n_p)
+	{
+		if (philo[i].burpo >= philo->data->number_of_meals)
+		{
+			satisfied_count++;
+		}
+		i++;
+	}
+	if (satisfied_count == philo->data->n_p)
+	{
+		announce_satisfaction(philo);
+		return (1);
+	}
+	return (0);
+}
+
+void	*ft_osserva(void *ph)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)ph;
+	if (philo->data->number_of_meals > 0)
+	{
+		while (!philo->data->all_satisfied && !death_status(philo->data))
+		{
+			if (ft_is_dead(philo) || ft_sazio(philo))
+				break ;
+		}
+	}
+	else
+	{
+		while (!death_status(philo->data))
+		{
+			if (ft_is_dead(philo))
+				break ;
+		}
+	}
+	return (NULL);
 }

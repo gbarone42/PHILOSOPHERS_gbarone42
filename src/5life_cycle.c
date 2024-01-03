@@ -1,83 +1,80 @@
-#include "../includes/philosophers.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   5life_cycle.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/03 13:00:59 by gbarone           #+#    #+#             */
+/*   Updated: 2024/01/03 15:32:53 by gbarone          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	init_last_meal_time(t_philo *philo)
-{
-	if (philo->time_last_meal == 0)
-		philo->time_last_meal = ft_get_time_now();
-}
+#include "../includes/philosophers.h"
 
 int	is_simulation_over(t_data *data)
 {
 	return (data->all_satisfied || death_status(data));
 }
 
-//starting routine for a thread
-//using the pthreads library, thread functions must have this signature:
-//returning void* and taking a single void* argument.
-void	pick_up_and_put_down_forks(t_philo *philo)
+void	assign_forks(t_philo *philo, int *first_fork, int *second_fork)
 {
-	usleep(1000);
-    // Philosophers pick up forks based on their ID to prevent deadlock.
-	if (philo->id_philo % 2 == 0)
-	{  // Even ID philosopher picks up right fork first.
-		pthread_mutex_lock(&philo->data->forks[philo->fk2]);
-		pthread_mutex_lock(&philo->data->forks[philo->fk1]);
+	if (philo->id_ph == philo->data->n_p)
+	{
+		*first_fork = max(philo->fk1, philo->fk2);
+		*second_fork = min(philo->fk1, philo->fk2);
 	}
 	else
-	{  // Odd ID philosopher picks up left fork first.
-		pthread_mutex_lock(&philo->data->forks[philo->fk1]);
-		pthread_mutex_lock(&philo->data->forks[philo->fk2]);
+	{
+		*first_fork = min(philo->fk1, philo->fk2);
+		*second_fork = max(philo->fk1, philo->fk2);
 	}
-    // Attempt to eat
-	ft_eat(philo);
-    // Put down the forks after eating or if eating was not successful.
-	pthread_mutex_unlock(&philo->data->forks[philo->fk1]);
-	pthread_mutex_unlock(&philo->data->forks[philo->fk2]);
 }
 
-// Function for the philosopher's life cycle
+int	try_to_eat(t_philo *philo)
+{
+	int	first_fork;
+	int	second_fork;
+
+	assign_forks(philo, &first_fork, &second_fork);
+	pthread_mutex_lock(&philo->data->forks[first_fork]);
+	if (death_status(philo->data) == 1 || philo->data->all_satisfied == 1)
+	{
+		pthread_mutex_unlock(&philo->data->forks[first_fork]);
+		return (1);
+	}
+	pthread_mutex_lock(&philo->data->forks[second_fork]);
+	if (death_status(philo->data) == 1 || philo->data->all_satisfied == 1)
+	{
+		pthread_mutex_unlock(&philo->data->forks[first_fork]);
+		pthread_mutex_unlock(&philo->data->forks[second_fork]);
+		return (1);
+	}
+	ft_eat(philo);
+	pthread_mutex_unlock(&philo->data->forks[first_fork]);
+	pthread_mutex_unlock(&philo->data->forks[second_fork]);
+	return (0);
+}
+
 void	*life_cycle(void *ph)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
-    philo = (t_philo *)ph;
-	init_last_meal_time(philo);
+	philo = (t_philo *)ph;
+	philo->tm_lst_meal = ft_get_time_now();
+	if (philo->id_ph == philo->data->n_p)
+		usleep(250);
 	while (!is_simulation_over(philo->data))
 	{
-		if (philo->id_philo % 2 == 0)
-		{
-			usleep(942);// Delay for even ID philosophers
-		}
-		pick_up_and_put_down_forks(philo);
+		if (try_to_eat(philo) != SUCCESS)
+			break ;
 		if (is_simulation_over(philo->data))
 			break ;
 		if (ft_sleep(philo) != SUCCESS)
 			break ;
+		if (is_simulation_over(philo->data))
+			break ;
 		ft_think(philo);
 	}
-	return (NULL);// End of the philosopher's life cycle
+	return (NULL);
 }
-
-// void *life_cycle(void *ph)
-// {
-//     t_philo *philo = (t_philo *)ph;
-
-//     init_last_meal_time(philo);
-//     while (!is_simulation_over(philo->data))
-// 	{
-//         if (ft_eat(philo) != SUCCESS)
-// 		{
-//             break; // Break the loop if eating failed or death occurred
-//         }
-//         if (is_simulation_over(philo->data))
-// 		{
-//             break;
-//         }
-//         if (ft_sleep(philo) != SUCCESS)
-// 		{
-//             break; // Break the loop if sleeping failed or death occurred
-//         }
-//         ft_think(philo);
-//     }
-//     return NULL; // End of the philosopher's life cycle
-// }

@@ -1,15 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   2init_free.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/03 13:00:51 by gbarone           #+#    #+#             */
+/*   Updated: 2024/01/03 15:32:53 by gbarone          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philosophers.h"
 
-#define COLOR_RED     "\x1b[31m"
-#define COLOR_RESET   "\x1b[0m"
+void	init_last_meal_time(t_philo *philo)
+{
+	if (philo->tm_lst_meal == 0)
+		philo->tm_lst_meal = ft_get_time_now();
+}
 
 void	ft_destroyall(t_philo *philo)
 {
 	int	i;
 
 	i = 0;
-	printf(COLOR_RED "\n..cleanup resources ✅ done..\n\n" COLOR_RESET);
-	while (i < philo->data->number_of_philos)
+	while (i < philo->data->n_p)
 	{
 		pthread_mutex_destroy(&philo->data->forks[i]);
 		i++;
@@ -26,7 +40,7 @@ void	ft_destroyall(t_philo *philo)
 
 void	ft_data_init(int ac, char **av, t_data *data)
 {
-	data->number_of_philos = ft_atoi(av[1]);
+	data->n_p = ft_atoi(av[1]);
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
@@ -34,37 +48,38 @@ void	ft_data_init(int ac, char **av, t_data *data)
 		data->number_of_meals = ft_atoi(av[5]);
 	else
 		data->number_of_meals = 0;
-	data->gburp = 1;// could be renamed 'is_simulation_running'
+	data->is_it_running = 1;
 	data->all_satisfied = 0;
 	return ;
 }
 
-void	ft_init_philo(t_philo *philo, t_data *data)//philo is an array of t_philo structures, each representing a philoso
+void	ft_init_philo(t_philo *philo, t_data *data)
 {
 	int	i;
 
 	i = 0;
 	if (!philo || !data)
-		return;// Adding a safety check for null pointers.
-	ft_mutexalo(data);// Initialize various mutexes in the t_data structure.
-	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->number_of_philos);//This line allocates memory for an array of mutexes (data->forks), with one mutex (fork) per philosopher. This ensures the total number of forks is equal to the number of philosophers.
+		return ;
+	ft_mutexalo(data);
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* data->n_p);
 	if (!data->forks)
 		return ;
-	while (i < data->number_of_philos)
+	while (i < data->n_p)
 	{
-		philo[i].data = data;// Link each philosopher to the shared data structure.
-		philo[i].fk1 = i;
-		philo[i].fk2 = (i + 1) % data->number_of_philos;// Simplifying fork assignment.
-		pthread_mutex_init(&data->forks[i], NULL);//initialize a mutex for each fork
-		philo[i].id_philo = i + 1;
-		philo[i].burpo = 0;// Rename 'burpo' to 'meal_count' for clarity.
-		philo[i].time_last_meal = 0;
+		philo[i].data = data;
+		philo[i].fk2 = i;
+		philo[i].fk1 = (i + 1) % data->n_p;
+		pthread_mutex_init(&data->forks[i], NULL);
+		philo[i].id_ph = i + 1;
+		philo[i].burpo = 0;
+		philo[i].tm_lst_meal = ft_get_time_now();
 		i++;
 	}
 }
 
 void	ft_general_init(int ac, char **av, t_data *data, t_philo *philo)
 {
-	ft_data_init(ac, av, data);// Initialize the data structure.
-	ft_init_philo(philo, data);// Initialize the philosopher array.
+	ft_data_init(ac, av, data);
+	ft_init_philo(philo, data);
 }
