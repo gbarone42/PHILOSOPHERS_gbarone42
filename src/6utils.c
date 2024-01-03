@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   8utils.c                                           :+:      :+:    :+:   */
+/*   6utils.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:05 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:32:53 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,10 @@ int	max(int a, int b)
 		return (a);
 	else
 		return (b);
+}
+
+void	init_last_meal_time(t_philo *philo)
+{
+	if (philo->tm_lst_meal == 0)
+		philo->tm_lst_meal = ft_get_time_now();
 }

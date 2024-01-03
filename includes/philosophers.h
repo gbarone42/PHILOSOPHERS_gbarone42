@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:46:44 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:52:34 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:27:02 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,18 @@ typedef struct s_philo
 }	t_philo;
 
 int			death_status(t_data *data);
-void		*ft_osserva(void *ph);
+void		*monitoraggio(void *ph);
 int			ft_is_dead(t_philo *philo);
 void		*life_cycle(void *ph);
 void		ft_think(t_philo *philo);
-void		ft_stampa_pd(t_philo *philo, char *str);
+void		ft_print_pd(t_philo *philo, char *str);
 int			ft_isdigit(char *str);
 void		ft_gburpoplus(t_philo *philo);
-void		ft_mutexalo(t_data *data);
+void		ft_mutexxx_init(t_data *data);
 int			ft_print_error(void);
-void		ft_lonely_boy(t_philo *philo);
+void		solitario(t_philo *philo);
 void		ft_data_init(int ac, char **av, t_data *data);
-int			ft_ca(t_philo *philo, long long dt, long long tn);
+int			starved(t_philo *philo, long long dt, long long tn);
 void		ft_general_init(int ac, char **av, t_data *data, t_philo *philo);
 void		ft_init_philo(t_philo *philo, t_data *data);
 void		ft_data_init(int ac, char **av, t_data *data);
@@ -94,7 +94,7 @@ int			ft_eat(t_philo *philo);
 void		*life_cycle(void *ph);
 int			is_simulation_over(t_data *data);
 void		init_last_meal_time(t_philo *philo);
-void		ft_destroyall(t_philo *philo);
+void		ft_mutexxx_destroy(t_philo *philo);
 int			min(int a, int b);
 int			max(int a, int b);
 void		init_last_meal_time(t_philo *philo);

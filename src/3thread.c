@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   3thread.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:55 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 13:03:05 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-void	*ft_start_thread(t_philo *philo)
+void	*threads_start(t_philo *philo)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void	*ft_start_thread(t_philo *philo)
 		i++;
 	}
 	i = 0;
-	pthread_create(&philo->data->big_bro, NULL, ft_osserva, (void *)philo);
+	pthread_create(&philo->data->big_bro, NULL, monitoraggio, (void *)philo);
 	while (i < philo->data->n_p)
 	{
 		pthread_join(philo[i].thread, NULL);
@@ -36,7 +36,7 @@ void	*ft_start_thread(t_philo *philo)
 
 void	philo_simulation(t_philo *philo)
 {
-	ft_start_thread(philo);
+	threads_start(philo);
 	usleep(100);
-	ft_destroyall(philo);
+	ft_mutexxx_destroy(philo);
 }

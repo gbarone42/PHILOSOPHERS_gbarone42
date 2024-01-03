@@ -3,22 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   2init_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:51 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:32:53 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:27:02 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-void	init_last_meal_time(t_philo *philo)
-{
-	if (philo->tm_lst_meal == 0)
-		philo->tm_lst_meal = ft_get_time_now();
-}
-
-void	ft_destroyall(t_philo *philo)
+void	ft_mutexxx_destroy(t_philo *philo)
 {
 	int	i;
 
@@ -36,6 +30,18 @@ void	ft_destroyall(t_philo *philo)
 	free(philo->data->forks);
 	free(philo->data);
 	free(philo);
+}
+
+void	ft_mutexxx_init(t_data *data)
+{
+	pthread_mutex_init(&data->timestamp_mutex, NULL);
+	pthread_mutex_init(&data->meal_access_mutex, NULL);
+	pthread_mutex_init(&data->print_mutex, NULL);
+	pthread_mutex_init(&data->dad, NULL);
+	pthread_mutex_init(&data->last_meal_mutex, NULL);
+	pthread_mutex_lock(&data->dad);
+	data->dead = 0 ;
+	pthread_mutex_unlock(&data->dad);
 }
 
 void	ft_data_init(int ac, char **av, t_data *data)
@@ -60,7 +66,7 @@ void	ft_init_philo(t_philo *philo, t_data *data)
 	i = 0;
 	if (!philo || !data)
 		return ;
-	ft_mutexalo(data);
+	ft_mutexxx_init(data);
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->n_p);
 	if (!data->forks)

@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_observer.c                                      :+:      :+:    :+:   */
+/*   9observer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:17 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:30:58 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
-
-int	ft_is_dead(t_philo *philo)
-{
-	long long	dead_time;
-	long long	current_time;
-	int			ret;
-
-	dead_time = (long long)philo->data->time_to_die;
-	pthread_mutex_lock(&philo->data->timestamp_mutex);
-	current_time = ft_get_time_now();
-	pthread_mutex_unlock(&philo->data->timestamp_mutex);
-	ret = ft_ca(philo, dead_time, current_time);
-	return (ret);
-}
 
 void	announce_satisfaction(t_philo *philo)
 {
@@ -34,7 +20,7 @@ void	announce_satisfaction(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->print_mutex);
 }
 
-int	ft_sazio(t_philo *philo)
+int	is_satisfaction(t_philo *philo)
 {
 	int	satisfied_count;
 	int	i;
@@ -61,7 +47,7 @@ int	ft_sazio(t_philo *philo)
 	return (0);
 }
 
-void	*ft_osserva(void *ph)
+void	*monitoraggio(void *ph)
 {
 	t_philo	*philo;
 
@@ -70,7 +56,7 @@ void	*ft_osserva(void *ph)
 	{
 		while (!philo->data->all_satisfied && !death_status(philo->data))
 		{
-			if (ft_is_dead(philo) || ft_sazio(philo))
+			if (ft_is_dead(philo) || is_satisfaction(philo))
 				break ;
 		}
 	}

@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_time.c                                          :+:      :+:    :+:   */
+/*   7death_status.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/03 13:01:37 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:20:03 by gbarone          ###   ########.fr       */
+/*   Created: 2024/01/03 13:01:07 by gbarone           #+#    #+#             */
+/*   Updated: 2024/01/03 22:25:31 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-int	ft_ca(t_philo *philo, long long dt, long long tn)
+int	death_status(t_data *data)
+{
+	int	is_dead;
+
+	pthread_mutex_lock(&data->dad);
+	is_dead = (data->dead == 1);
+	pthread_mutex_unlock(&data->dad);
+	return (is_dead);
+}
+
+int	starved(t_philo *philo, long long dt, long long tn)
 {
 	int			i;
 
@@ -36,4 +46,18 @@ int	ft_ca(t_philo *philo, long long dt, long long tn)
 		i++;
 	}
 	return (0);
+}
+
+int	ft_is_dead(t_philo *philo)
+{
+	long long	dead_time;
+	long long	current_time;
+	int			ret;
+
+	dead_time = (long long)philo->data->time_to_die;
+	pthread_mutex_lock(&philo->data->timestamp_mutex);
+	current_time = ft_get_time_now();
+	pthread_mutex_unlock(&philo->data->timestamp_mutex);
+	ret = starved(philo, dead_time, current_time);
+	return (ret);
 }
