@@ -6,7 +6,7 @@
 /*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:46:44 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:33:20 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 15:52:34 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ bool		is_valid_input(int ac, char **av);
 int			parse_positive_integer(char *str);
 int			ft_atoi(const char *str);
 void		philo_simulation(t_philo *philo);
-void		parity(t_philo *philo);
 int			death_status(t_data *data);
 long long	ft_get_time_now(void);
 long long	delta_time(long long time);

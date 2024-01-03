@@ -6,22 +6,11 @@
 /*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:46 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 13:03:05 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 15:52:34 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
-
-void	parity(t_philo *philo)
-{
-	bool	is_total_even;
-
-	is_total_even = (philo->data->n_p % 2 == 0);
-	if (is_total_even)
-	{
-		usleep(100);
-	}
-}
 
 int	parse_positive_integer(char *str)
 {
