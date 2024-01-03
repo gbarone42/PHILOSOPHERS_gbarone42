@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   5life_cycle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
+/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:59 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:32:53 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 22:29:44 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ void	assign_forks(t_philo *philo, int *first_fork, int *second_fork)
 {
 	if (philo->id_ph == philo->data->n_p)
 	{
-		*first_fork = max(philo->fk1, philo->fk2);
-		*second_fork = min(philo->fk1, philo->fk2);
+		*first_fork = max(philo->fk1, philo->fk0);
+		*second_fork = min(philo->fk1, philo->fk0);
 	}
 	else
 	{
-		*first_fork = min(philo->fk1, philo->fk2);
-		*second_fork = max(philo->fk1, philo->fk2);
+		*first_fork = min(philo->fk1, philo->fk0);
+		*second_fork = max(philo->fk1, philo->fk0);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:51 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:27:02 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/03 22:29:44 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	ft_init_philo(t_philo *philo, t_data *data)
 	while (i < data->n_p)
 	{
 		philo[i].data = data;
-		philo[i].fk2 = i;
+		philo[i].fk0 = i;
 		philo[i].fk1 = (i + 1) % data->n_p;
 		pthread_mutex_init(&data->forks[i], NULL);
 		philo[i].id_ph = i + 1;

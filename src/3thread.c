@@ -6,7 +6,7 @@
 /*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:55 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/03 22:28:46 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ void	*threads_start(t_philo *philo)
 		i++;
 	}
 	i = 0;
-	pthread_create(&philo->data->big_bro, NULL, monitoraggio, (void *)philo);
+	pthread_create(&philo->data->observer, NULL, monitoraggio, (void *)philo);
 	while (i < philo->data->n_p)
 	{
 		pthread_join(philo[i].thread, NULL);
 		i++;
 	}
-	pthread_join(philo->data->big_bro, NULL);
+	pthread_join(philo->data->observer, NULL);
 	return (NULL);
 }
 

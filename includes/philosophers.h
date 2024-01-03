@@ -6,7 +6,7 @@
 /*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:46:44 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:27:02 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/03 22:32:07 by badph            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <fcntl.h>
-# include <semaphore.h>
 # include <signal.h>
 # include <limits.h>
 # include <stdbool.h>
@@ -32,7 +31,7 @@
 
 typedef struct s_data
 {
-	pthread_t		big_bro;
+	pthread_t		observer;
 	pthread_mutex_t	timestamp_mutex;
 	pthread_mutex_t	meal_access_mutex;
 	pthread_mutex_t	print_mutex;
@@ -55,7 +54,7 @@ typedef struct s_philo
 {
 	pthread_t		thread;
 	int				fk1;
-	int				fk2;
+	int				fk0;
 	t_data			*data;
 	long long		tm_lst_meal;
 	int				id_ph;
@@ -68,10 +67,7 @@ int			ft_is_dead(t_philo *philo);
 void		*life_cycle(void *ph);
 void		ft_think(t_philo *philo);
 void		ft_print_pd(t_philo *philo, char *str);
-int			ft_isdigit(char *str);
-void		ft_gburpoplus(t_philo *philo);
 void		ft_mutexxx_init(t_data *data);
-int			ft_print_error(void);
 void		solitario(t_philo *philo);
 void		ft_data_init(int ac, char **av, t_data *data);
 int			starved(t_philo *philo, long long dt, long long tn);
