@@ -6,7 +6,7 @@
 /*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:19 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 15:58:31 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/03 18:04:49 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,6 @@ void	ft_lonely_boy(t_philo *philo)
     write(1, "      '.          .'\n", 22);
     write(1, "        '-......-'\n", 20);
     write(1, "\n", 1);
+	
 	ft_destroyall(philo);
 }
