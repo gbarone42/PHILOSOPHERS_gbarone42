@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:46:44 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:32:07 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 01:53:50 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_data
 	pthread_mutex_t	meal_access_mutex;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	last_meal_mutex;
-	pthread_mutex_t	dad;
+	pthread_mutex_t	death;
 	pthread_mutex_t	*forks;
 	int				is_it_running;
 	int				n_p;
@@ -72,7 +72,7 @@ void		solitario(t_philo *philo);
 void		ft_data_init(int ac, char **av, t_data *data);
 int			starved(t_philo *philo, long long dt, long long tn);
 void		ft_general_init(int ac, char **av, t_data *data, t_philo *philo);
-void		ft_init_philo(t_philo *philo, t_data *data);
+void		ft_philo_innit(t_philo *philo, t_data *data);
 void		ft_data_init(int ac, char **av, t_data *data);
 int			check(int ac, char **av);
 void		ft_error(void);

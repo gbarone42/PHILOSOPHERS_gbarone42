@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   7death_status.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:07 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:25:31 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 01:53:50 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ int	death_status(t_data *data)
 {
 	int	is_dead;
 
-	pthread_mutex_lock(&data->dad);
+	pthread_mutex_lock(&data->death);
 	is_dead = (data->dead == 1);
-	pthread_mutex_unlock(&data->dad);
+	pthread_mutex_unlock(&data->death);
 	return (is_dead);
 }
 
@@ -34,11 +34,11 @@ int	starved(t_philo *philo, long long dt, long long tn)
 		{
 			pthread_mutex_unlock(&philo->data->last_meal_mutex);
 			pthread_mutex_lock(&philo->data->print_mutex);
-			pthread_mutex_lock(&philo->data->dad);
+			pthread_mutex_lock(&philo->data->death);
 			printf("%llu the %d philosopher starved 💀 \n",
 				delta_time(philo->data->time_start), philo[i].id_ph);
 			philo->data->dead = 1;
-			pthread_mutex_unlock(&philo->data->dad);
+			pthread_mutex_unlock(&philo->data->death);
 			pthread_mutex_unlock(&philo->data->print_mutex);
 			return (1);
 		}

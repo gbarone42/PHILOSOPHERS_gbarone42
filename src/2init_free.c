@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   2init_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:51 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:29:44 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 01:53:50 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_mutexxx_destroy(t_philo *philo)
 	pthread_mutex_destroy(&philo->data->timestamp_mutex);
 	pthread_mutex_destroy(&philo->data->meal_access_mutex);
 	pthread_mutex_destroy(&philo->data->print_mutex);
-	pthread_mutex_destroy(&philo->data->dad);
+	pthread_mutex_destroy(&philo->data->death);
 	pthread_mutex_destroy(&philo->data->last_meal_mutex);
 	free(philo->data->forks);
 	free(philo->data);
@@ -37,11 +37,11 @@ void	ft_mutexxx_init(t_data *data)
 	pthread_mutex_init(&data->timestamp_mutex, NULL);
 	pthread_mutex_init(&data->meal_access_mutex, NULL);
 	pthread_mutex_init(&data->print_mutex, NULL);
-	pthread_mutex_init(&data->dad, NULL);
+	pthread_mutex_init(&data->death, NULL);
 	pthread_mutex_init(&data->last_meal_mutex, NULL);
-	pthread_mutex_lock(&data->dad);
+	pthread_mutex_lock(&data->death);
 	data->dead = 0 ;
-	pthread_mutex_unlock(&data->dad);
+	pthread_mutex_unlock(&data->death);
 }
 
 void	ft_data_init(int ac, char **av, t_data *data)
@@ -59,7 +59,7 @@ void	ft_data_init(int ac, char **av, t_data *data)
 	return ;
 }
 
-void	ft_init_philo(t_philo *philo, t_data *data)
+void	ft_philo_innit(t_philo *philo, t_data *data)
 {
 	int	i;
 
@@ -87,5 +87,5 @@ void	ft_init_philo(t_philo *philo, t_data *data)
 void	ft_general_init(int ac, char **av, t_data *data, t_philo *philo)
 {
 	ft_data_init(ac, av, data);
-	ft_init_philo(philo, data);
+	ft_philo_innit(philo, data);
 }
