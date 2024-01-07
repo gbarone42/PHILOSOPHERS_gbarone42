@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   6utils.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:05 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 17:11:02 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,6 @@ int	max(int a, int b)
 
 void	init_last_meal_time(t_philo *philo)
 {
-	if (philo->tm_lst_meal == 0)
-		philo->tm_lst_meal = ft_get_time_now();
+	if (philo->time_last_meal == 0)
+		philo->time_last_meal = ft_get_time_now();
 }

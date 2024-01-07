@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42firenze.it>     +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:46:44 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/04 01:53:50 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/04 18:35:22 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@ typedef struct s_data
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	death;
+	pthread_mutex_t	burpo_mutex;
+	pthread_mutex_t	satisfied;
 	pthread_mutex_t	*forks;
-	int				is_it_running;
 	int				n_p;
 	int				number_of_meals;
 	int				time_to_sleep;
 	int				time_to_eat;
 	int				time_to_die;
-	int				n_end;
 	int				dead;
 	int				all_satisfied;
-	long long		time_start;
+	long long		start_time;
 }	t_data;
 
 typedef struct s_philo
@@ -56,7 +56,7 @@ typedef struct s_philo
 	int				fk1;
 	int				fk0;
 	t_data			*data;
-	long long		tm_lst_meal;
+	long long		time_last_meal;
 	int				id_ph;
 	int				burpo;
 }	t_philo;
@@ -84,7 +84,7 @@ int			ft_atoi(const char *str);
 void		philo_simulation(t_philo *philo);
 int			death_status(t_data *data);
 long long	ft_get_time_now(void);
-long long	delta_time(long long time);
+long long	diff_time(long long time);
 int			ft_sleep(t_philo *philo);
 int			ft_eat(t_philo *philo);
 void		*life_cycle(void *ph);

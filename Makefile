@@ -35,6 +35,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HDRS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@printf "\033[2K\r${BLUE}[BUILD - $(NAME)]${CLR_RMV} '$<' ${END}"
 
+all: $(NAME)
+
 # Build the executable
 $(NAME): $(OBJS)
 	@printf "\033[1;36m\n"
@@ -54,7 +56,6 @@ $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $@
 	@echo "\n\033[1;36m  ==> Compilation complete! Embark on your quest with './$(NAME)'.\033[0m\n"
 
-all: $(NAME)
 
 clean:
 	@printf "\033[1;31m\n"
@@ -111,4 +112,4 @@ test:
 	@echo "  ➡️ Example: ./$(NAME) 5 800 200 200                        "
 	@echo "\033[0m"
 
-.PHONY: all clean fclean re test philo philotest
+.PHONY: all clean fclean re test philotest

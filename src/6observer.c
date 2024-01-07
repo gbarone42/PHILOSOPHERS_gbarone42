@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   9observer.c                                        :+:      :+:    :+:   */
+/*   6observer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:01:17 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:27:08 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 19:01:45 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 void	announce_satisfaction(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->data->satisfied);
 	pthread_mutex_lock(&philo->data->print_mutex);
-	printf("%llu 🌈 SATISFACTION\n", delta_time(philo->data->time_start));
+	printf("%llu 🌈 SATISFACTION\n", diff_time(philo->data->start_time));
 	philo->data->all_satisfied = 1;
 	pthread_mutex_unlock(&philo->data->print_mutex);
+	pthread_mutex_unlock(&philo->data->satisfied);
 }
 
 int	is_satisfaction(t_philo *philo)
@@ -33,10 +35,12 @@ int	is_satisfaction(t_philo *philo)
 	}
 	while (i < philo->data->n_p)
 	{
+		pthread_mutex_lock(&philo->data->burpo_mutex);
 		if (philo[i].burpo >= philo->data->number_of_meals)
 		{
 			satisfied_count++;
 		}
+		pthread_mutex_unlock(&philo->data->burpo_mutex);
 		i++;
 	}
 	if (satisfied_count == philo->data->n_p)
@@ -58,6 +62,7 @@ void	*monitoraggio(void *ph)
 		{
 			if (ft_is_dead(philo) || is_satisfaction(philo))
 				break ;
+			usleep(100);
 		}
 	}
 	else

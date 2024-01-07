@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   5life_cycle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:59 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:29:44 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 19:52:53 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,15 @@
 
 int	is_simulation_over(t_data *data)
 {
-	return (data->all_satisfied || death_status(data));
+	int	ret;
+
+	pthread_mutex_lock(&data->satisfied);
+	if (data->all_satisfied == 1)
+		ret = 1;
+	else
+		ret = death_status(data);
+	pthread_mutex_unlock(&data->satisfied);
+	return (ret);
 }
 
 void	assign_forks(t_philo *philo, int *first_fork, int *second_fork)
@@ -31,20 +39,20 @@ void	assign_forks(t_philo *philo, int *first_fork, int *second_fork)
 	}
 }
 
-int	try_to_eat(t_philo *philo)
+int	try_to_eat(t_philo *philo, int all_satisfied)
 {
 	int	first_fork;
 	int	second_fork;
 
 	assign_forks(philo, &first_fork, &second_fork);
 	pthread_mutex_lock(&philo->data->forks[first_fork]);
-	if (death_status(philo->data) == 1 || philo->data->all_satisfied == 1)
+	if (death_status(philo->data) == 1 || all_satisfied == 1)
 	{
 		pthread_mutex_unlock(&philo->data->forks[first_fork]);
 		return (1);
 	}
 	pthread_mutex_lock(&philo->data->forks[second_fork]);
-	if (death_status(philo->data) == 1 || philo->data->all_satisfied == 1)
+	if (death_status(philo->data) == 1 || all_satisfied == 1)
 	{
 		pthread_mutex_unlock(&philo->data->forks[first_fork]);
 		pthread_mutex_unlock(&philo->data->forks[second_fork]);
@@ -59,14 +67,18 @@ int	try_to_eat(t_philo *philo)
 void	*life_cycle(void *ph)
 {
 	t_philo	*philo;
+	int		satisfied;
 
 	philo = (t_philo *)ph;
-	philo->tm_lst_meal = ft_get_time_now();
-	if (philo->id_ph == philo->data->n_p)
-		usleep(250);
+	pthread_mutex_lock(&philo->data->last_meal_mutex);
+	philo->time_last_meal = ft_get_time_now();
+	pthread_mutex_unlock(&philo->data->last_meal_mutex);
 	while (!is_simulation_over(philo->data))
 	{
-		if (try_to_eat(philo) != SUCCESS)
+		pthread_mutex_lock(&philo->data->satisfied);
+		satisfied = philo->data->all_satisfied;
+		pthread_mutex_unlock(&philo->data->satisfied);
+		if (try_to_eat(philo, satisfied) != SUCCESS)
 			break ;
 		if (is_simulation_over(philo->data))
 			break ;

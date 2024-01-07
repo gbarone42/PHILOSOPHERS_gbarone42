@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   3thread.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badph <badph@student.42.fr>                +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:55 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/03 22:28:46 by badph            ###   ########.fr       */
+/*   Updated: 2024/01/04 19:52:53 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ void	*threads_start(t_philo *philo)
 	int	i;
 
 	i = 0;
-	philo->data->time_start = ft_get_time_now();
+	philo->data->start_time = ft_get_time_now();
 	while (i < philo->data->n_p)
 	{
 		pthread_create(&philo[i].thread, NULL, life_cycle, (void *)&philo[i]);
+		usleep(100);
 		i++;
 	}
 	i = 0;

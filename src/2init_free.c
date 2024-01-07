@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   2init_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbarone <gbarone@student.42firenze.it>     +#+  +:+       +#+        */
+/*   By: gbarone <gbarone@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:00:51 by gbarone           #+#    #+#             */
-/*   Updated: 2024/01/04 01:53:50 by gbarone          ###   ########.fr       */
+/*   Updated: 2024/01/04 18:35:08 by gbarone          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	ft_mutexxx_destroy(t_philo *philo)
 	pthread_mutex_destroy(&philo->data->print_mutex);
 	pthread_mutex_destroy(&philo->data->death);
 	pthread_mutex_destroy(&philo->data->last_meal_mutex);
+	pthread_mutex_destroy(&philo->data->satisfied);
+	pthread_mutex_destroy(&philo->data->burpo_mutex);
 	free(philo->data->forks);
 	free(philo->data);
 	free(philo);
@@ -35,9 +37,11 @@ void	ft_mutexxx_destroy(t_philo *philo)
 void	ft_mutexxx_init(t_data *data)
 {
 	pthread_mutex_init(&data->timestamp_mutex, NULL);
+	pthread_mutex_init(&data->burpo_mutex, NULL);
 	pthread_mutex_init(&data->meal_access_mutex, NULL);
 	pthread_mutex_init(&data->print_mutex, NULL);
 	pthread_mutex_init(&data->death, NULL);
+	pthread_mutex_init(&data->satisfied, NULL);
 	pthread_mutex_init(&data->last_meal_mutex, NULL);
 	pthread_mutex_lock(&data->death);
 	data->dead = 0 ;
@@ -54,7 +58,6 @@ void	ft_data_init(int ac, char **av, t_data *data)
 		data->number_of_meals = ft_atoi(av[5]);
 	else
 		data->number_of_meals = 0;
-	data->is_it_running = 1;
 	data->all_satisfied = 0;
 	return ;
 }
@@ -79,7 +82,7 @@ void	ft_philo_innit(t_philo *philo, t_data *data)
 		pthread_mutex_init(&data->forks[i], NULL);
 		philo[i].id_ph = i + 1;
 		philo[i].burpo = 0;
-		philo[i].tm_lst_meal = ft_get_time_now();
+		philo[i].time_last_meal = ft_get_time_now();
 		i++;
 	}
 }
